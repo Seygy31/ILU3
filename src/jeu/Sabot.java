@@ -9,10 +9,13 @@ public class Sabot implements Iterable<Carte> {
     private final Carte[] cartes;
     private int nbCartes;
     private int nombreOperations = 0;
+    
+    private Iterator<Carte> iterateurPioche;
 
     public Sabot(Carte[] cartes) {
         this.cartes = cartes;
         this.nbCartes = cartes.length;
+        this.iterateurPioche = iterator(); 
     }
 
     public boolean estVide() {
@@ -28,12 +31,11 @@ public class Sabot implements Iterable<Carte> {
     }
 
     public Carte piocher() {
-        Iterator<Carte> it = iterator();
-        if (!it.hasNext()) {
+        if (!iterateurPioche.hasNext()) {
             throw new NoSuchElementException("Le sabot est vide.");
         }
-        Carte carte = it.next();
-        it.remove();
+        Carte carte = iterateurPioche.next();
+        iterateurPioche.remove();
         return carte;
     }
 
