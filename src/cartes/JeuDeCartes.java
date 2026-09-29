@@ -1,34 +1,32 @@
 package cartes;
 
-public class JeuDeCartes {
-    private final Configuration[] typesDeCartes;
+import java.util.Iterator;
 
-    public JeuDeCartes() {
-        this.typesDeCartes = new Configuration[] {
-            new Configuration(new Borne(25), 10),
-            new Configuration(new Borne(50), 10),
-            new Configuration(new Borne(75), 10),
-            new Configuration(new Borne(100), 12),
-            new Configuration(new Borne(200), 4),
-            new Configuration(new Parade(Type.FEU), 14),
-            new Configuration(new FinLimite(), 6),
-            new Configuration(new Parade(Type.ESSENCE), 6),
-            new Configuration(new Parade(Type.CREVAISON), 6),
-            new Configuration(new Parade(Type.ACCIDENT), 6),
-            new Configuration(new Attaque(Type.FEU), 5),
-            new Configuration(new DebutLimite(), 4),
-            new Configuration(new Attaque(Type.ESSENCE), 3),
-            new Configuration(new Attaque(Type.CREVAISON), 3),
-            new Configuration(new Attaque(Type.ACCIDENT), 3),
-            new Configuration(new Botte(Type.FEU), 1),
-            new Configuration(new Botte(Type.ESSENCE), 1),
-            new Configuration(new Botte(Type.CREVAISON), 1),
-            new Configuration(new Botte(Type.ACCIDENT), 1)
-        };
-    }
+public class JeuDeCartes {
+    private Configuration[] typesDeCartes = new Configuration[] {
+        new Configuration(new Borne(25), 10),
+        new Configuration(new Borne(50), 10),
+        new Configuration(new Borne(75), 10),
+        new Configuration(new Borne(100), 12),
+        new Configuration(new Borne(200), 4),
+        new Configuration(new Parade(Type.FEU), 14),
+        new Configuration(new FinLimite(), 6),
+        new Configuration(new Parade(Type.ESSENCE), 6),
+        new Configuration(new Parade(Type.CREVAISON), 6),
+        new Configuration(new Parade(Type.ACCIDENT), 6),
+        new Configuration(new Attaque(Type.FEU), 5),
+        new Configuration(new DebutLimite(), 4),
+        new Configuration(new Attaque(Type.ESSENCE), 3),
+        new Configuration(new Attaque(Type.CREVAISON), 3),
+        new Configuration(new Attaque(Type.ACCIDENT), 3),
+        new Configuration(new Botte(Type.FEU), 1),
+        new Configuration(new Botte(Type.ESSENCE), 1),
+        new Configuration(new Botte(Type.CREVAISON), 1),
+        new Configuration(new Botte(Type.ACCIDENT), 1)
+    };
 
     public String affichageJeuDeCartes() {
-        StringBuilder sb = new StringBuilder("JEU :\n");
+        StringBuilder sb = new StringBuilder();
         for (Configuration config : typesDeCartes) {
             sb.append(config.getNbExemplaires())
               .append(" ")
@@ -38,28 +36,45 @@ public class JeuDeCartes {
         return sb.toString();
     }
 
-    public Carte[] donnerCartes() {
-        int totalCartes = 0;
-        for (Configuration config : typesDeCartes) {
-            totalCartes += config.getNbExemplaires();
+    public boolean checkCount() {
+        Carte[] toutesLesCartes = donnerCartes();
+        
+        // 1. On vérifie le nombre total de cartes (106)
+        if (toutesLesCartes.length != 106) {
+            return false;
         }
 
-        Carte[] toutesLesCartes = new Carte[totalCartes];
+        // 2. On vérifie que le nombre réel de chaque type correspond à la configuration
+        for (Configuration config : typesDeCartes) {
+            int count = 0;
+            for (Carte c : toutesLesCartes) {
+                if (c.equals(config.getCarte())) {
+                    count++;
+                }
+            }
+            if (count != config.getNbExemplaires()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public Carte[] donnerCartes() {
+        Carte[] cartes = new Carte[106];
         int index = 0;
         for (Configuration config : typesDeCartes) {
             for (int i = 0; i < config.getNbExemplaires(); i++) {
-                toutesLesCartes[index++] = config.getCarte();
+                cartes[index++] = config.getCarte();
             }
         }
-        return toutesLesCartes;
+        return cartes;
     }
 
-    // Classe interne privees correspondant au diagramme UML
     private static class Configuration {
-        private final Carte carte;
-        private final int nbExemplaires;
+        private Carte carte;
+        private int nbExemplaires;
 
-        private Configuration(Carte carte, int nbExemplaires) {
+        public Configuration(Carte carte, int nbExemplaires) {
             this.carte = carte;
             this.nbExemplaires = nbExemplaires;
         }
